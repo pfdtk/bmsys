@@ -9,7 +9,7 @@ return [
     'sys_session_lefttime' => 7200,
 
     //图片的域名，必须以http://开头
-    'sys_images_domain' => 'http://shop.iw.com',
+    'sys_images_domain' => 'http://img.iw.com',
 
     //后台访问域名，不用http://开头
     'sys_admin_domain' => 'shop.iw.com',

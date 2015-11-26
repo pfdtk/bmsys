@@ -4,8 +4,9 @@
   <td nowrap="nowrap"><?php echo $value['module'].'-'.$value['class'].'-'.$value['action']; ?></td>
   <td nowrap="nowrap"><?php echo $value['display'] == 1 ? '是' : '否'; ?></td>
   <td nowrap="nowrap"><?php echo $value['mark']; ?></td>
-  <td nowrap="nowrap">
-    <?php echo widget('Admin.Acl')->edit($value); ?>
-    <?php echo widget('Admin.Acl')->delete($value); ?>
+  <td nowrap="nowrap" class="widget-acl">
+    <?php $edit = widget('Admin.Acl')->edit($value); echo $edit['html']; ?>
+    <?php $delete = widget('Admin.Acl')->delete($value); echo $delete['html']; ?>
+    <?php if($edit['show'] or $delete['show']) \App\Services\Tmp::setTmp(); ?>
   </td>
 </tr>

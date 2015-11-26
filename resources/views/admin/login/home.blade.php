@@ -25,6 +25,8 @@ body{ background:#0066A8 no-repeat center 0px;}
 </script>
 </head>
 
+<!--[if lt IE 9 ]> <body style="background:#fff;">您使用的是IE浏览器，仅支持IE9以上版本，建议使用firefox、chrome浏览器，以或得最佳体验。</body><![endif]-->
+<!--[if (gt IE 8)|!(IE)]><!--> 
 <body>
 <div class="tit"><img src="<?php echo loadStatic('/weishop/img/tit.png'); ?>" alt="" /></div>
 <div class="login-wrap">
@@ -47,7 +49,7 @@ body{ background:#0066A8 no-repeat center 0px;}
    
   </table>
 </div>
-<div class="copyright">建议使用IE9以上版本或谷歌浏览器</div>
+<div class="copyright">仅支持IE9以上版本、谷歌浏览器、firefox浏览器</div>
 <script type="text/javascript" src="<?php echo loadStatic('/weishop/js/jquery.1.11.1.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo loadStatic('/weishop/js/bootstrap.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo loadStatic('/crypto/md5.js'); ?>" ></script>
@@ -72,4 +74,5 @@ body{ background:#0066A8 no-repeat center 0px;}
   });
 </script>
 </body>
+<!--<![endif]-->
 </html>

@@ -17,8 +17,7 @@ html, body { padding: 0px!important; padding: 100px 0px; width: 100%; height: 10
 .header-right { float: right; padding-left: 50px; height: 50px; line-height: 50px;}
 .header-right a { color: #fff; line-height: 50px; margin-right: 20px; }
 .fixed-bottom { position: absolute; bottom: 0; margin-bottom: 0; }
-.nav-tabs > li { margin-bottom: -1px; width: 130px; text-align: center; font-size: 14px; font-family: "microsoft yahei"; font-weight: bold; }
- 
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {background-color:#eee; color: #666; border-left: 1px solid #ddd; border-top: 1px solid #ddd; border-right: 1px solid #ddd;} 
 
 .scroll{   position: absolute!important; top: 0px!important; height: auto!important; position: relative; top: -100px; _top: 0px; height: 100%; bottom: 30px; width:260px;}
 .car_icon li ul li a{ font-size:12px; background:url(../img/car_icon.png) no-repeat left center; padding-left:18px;}

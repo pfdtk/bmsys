@@ -93,46 +93,49 @@ class Process extends BaseProcess
     /**
      * 开始处理上传
      *
-     * @return false|string
+     * @return false|array
      */
     public function upload()
     {
-        //是否上传出错
-        if ( ! $this->file->isValid() or $this->file->getError() != UPLOAD_ERR_OK) return false;
-        //保存的路径
+        // 是否上传出错
+        if ( ! $this->file->isValid() or $this->file->getError() != UPLOAD_ERR_OK) {
+            return false;
+        }
+
+        // 保存的路径
         $savePath = $this->setSavePath();
-        //保存的文件名
+
+        // 保存的文件名
         $saveFileName = $this->getSaveFileName().'.'.$this->file->getClientOriginalExtension();
-        //保存
+
+        // 保存文件
         $this->file->move($savePath, $saveFileName);
-        //文件是否存在
-        $realFile = $savePath.$saveFileName;
-        if( ! file_exists($realFile)) return false;
+
+        // 文件是否存在
+        $realFile = $savePath . $saveFileName;
+        if( ! file_exists($realFile)) {
+            return false;
+        }
 
         //是否加上水印
-        if(isset($this->params['waterSetting']) and $this->params['waterSetting'] === true)
-        {
+        if(isset($this->params['waterSetting']) and $this->params['waterSetting'] === true) {
             $waterImage = $this->params['waterImage'];
-            if( ! isset($this->params['waterImage']) or empty($this->params['waterImage']))
-            {
+            if( ! isset($this->params['waterImage']) or empty($this->params['waterImage'])) {
                 $waterImage = $this->getWaterFile();
             }
             $this->waterImage($realFile, $waterImage);
         }
 
         //返回文件
-        $realFileUrl[] = str_replace('/', '', str_replace($this->getConfigSavePath(), '', $realFile));
+        $realFileUrl[] = substr(str_replace($this->getConfigSavePath(), '', $realFile), 1);
         $thumbRealFileUrl = [];
 
         //是否要裁剪
-        if(isset($this->params['thumbSetting']) and ! empty($this->params['thumbSetting']))
-        {
+        if(isset($this->params['thumbSetting']) and ! empty($this->params['thumbSetting'])) {
             $thumbRealFileUrl = $this->cutImage($realFile, $savePath);
         }
 
-        $returnFileUrl = implode('|', array_merge($realFileUrl, $thumbRealFileUrl));
-
-        return $returnFileUrl;
+        return array_merge($realFileUrl, $thumbRealFileUrl);
     }
 
     /**
@@ -147,9 +150,15 @@ class Process extends BaseProcess
         $imagine = new \Imagine\Gd\Imagine();
         $watermark = $imagine->open($waterImage);
         $image = $imagine->open($realFile);
+
         $size = $image->getSize();
         $wSize = $watermark->getSize();
-        $bottomRight = new \Imagine\Image\Point($size->getWidth() - $wSize->getWidth(), $size->getHeight() - $wSize->getHeight());
+
+        $bottomRight = new \Imagine\Image\Point(
+            $size->getWidth() - $wSize->getWidth(),
+            $size->getHeight() - $wSize->getHeight()
+        );
+
         $image->paste($watermark, $bottomRight);
         $image->save($realFile);
     }
@@ -163,21 +172,37 @@ class Process extends BaseProcess
      */
     private function cutImage($realFile, $savePath)
     {
-        if( ! isImage($this->file->getClientOriginalExtension())) throw new \Exception("Image thumb must be images.");
+        if( ! isImage($this->file->getClientOriginalExtension())) {
+            throw new \Exception("Image thumb must be images.");
+        }
+
         $imagine = new \Imagine\Gd\Imagine();
         $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
         $result = [];
-        foreach($this->params['thumbSetting'] as $key => $value)
-        {
-            if(isset($value['width'], $value['height']) and is_numeric($value['width']) and is_numeric($value['height']))
-            {
+
+        foreach($this->params['thumbSetting'] as $key => $value) {
+            if(isset($value['width'], $value['height']) and is_numeric($value['width']) and is_numeric($value['height'])) {
                 $size = new \Imagine\Image\Box($value['width'], $value['height']);
-                $saveName = $savePath.$this->getSaveFileName().'_'.$value['width'].'_'.$value['height'].'_thumb.'.$this->file->getClientOriginalExtension();
+                $saveName = $this->getCutImageSaveName($savePath, $value['width'], $value['height']);
                 $imagine->open($realFile)->thumbnail($size, $mode)->save($saveName);
-                $result[] = str_replace('/', '', str_replace($this->getConfigSavePath(), '', $saveName));
+                $result[] = substr(str_replace($this->getConfigSavePath(), '', $saveName), 1);
             }
         }
+        
         return $result;
+    }
+
+    /**
+     * 生成缩略图的保存文件名
+     *
+     * @param string $savePath 保存的路径
+     * @param int $width 宽
+     * @param int $height 高
+     * @return string
+     */
+    private function getCutImageSaveName($savePath, $width, $height)
+    {
+        return $savePath.$this->getSaveFileName().'_'.$width.'_'.$height.'_thumb.'.$this->file->getClientOriginalExtension();
     }
 
     /**
@@ -187,10 +212,8 @@ class Process extends BaseProcess
      */
     private function setSavePath()
     {
-        $savePath = base64url_decode($this->params['uploadPath']);
-        if( ! is_dir($savePath))
-        {
-            //如果保存路径不存在，那么建立它
+        $savePath = base64url_decode($this->params['uploadPath']) . date('Ymd') . '/' ;
+        if( ! is_dir($savePath)) {
             dir_create($savePath);
         }
         return $savePath;
@@ -203,7 +226,9 @@ class Process extends BaseProcess
      */
     private function getSaveFileName()
     {
-        if( ! $this->saveFileName) $this->saveFileName = md5(uniqid('pre', TRUE).mt_rand(1000000,9999999));
+        if( ! $this->saveFileName) {
+            $this->saveFileName = md5(uniqid('pre', TRUE).mt_rand(1000000,9999999));
+        }
         return $this->saveFileName;
     }
 
@@ -214,7 +239,9 @@ class Process extends BaseProcess
      */
     private function getConfigSavePath()
     {
-        if( ! $this->configSavePath) $this->configSavePath = \Config::get('sys.sys_upload_path');
+        if( ! $this->configSavePath) {
+            $this->configSavePath = \Config::get('sys.sys_upload_path');
+        }
         return $this->configSavePath;
     }
 

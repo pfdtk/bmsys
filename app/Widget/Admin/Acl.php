@@ -23,7 +23,8 @@ class Acl extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['id' => url_param_encode($data['id'])]);
         $html = $this->hasPermission ?
                     '<a title="编辑" href="'.$url.'"><i class="icon-pencil"></i></a>'
-                        : '<i class="icon-pencil" title="没有权限"></i>';
+                        : '';
+        $html = ['show' => $this->hasPermission, 'html' => $html];
         return $html;
     }
 
@@ -38,7 +39,8 @@ class Acl extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['id' => url_param_encode($data['id'])]);
         $html = $this->hasPermission ?
                     '<a title="删除" href="javascript:rc.ajaxDelete(\''.$url.'\', \'sys-list\', \'确定吗？\');"><i class="icon-trash"></i></a>'
-                        : '<i class="icon-trash" title="没有权限"></i>';
+                        : '';
+        $html = ['show' => $this->hasPermission, 'html' => $html];
         return $html;
     }
 

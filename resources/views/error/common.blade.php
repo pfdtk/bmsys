@@ -5,7 +5,7 @@
     	body {font-family: "微软雅黑","Open Sans",helvetica,arial,sans-serif;}
     	#container {width: 300px; margin: 0 auto; height: 100%;}
     	.error-code {
-    		font-size: 130px;
+    		font-size: 70px;
     		color:#ccc;
 			text-shadow: 0 2px 3px #ccc, 0px -2px 1px #fff;
 			font-weight: bold;
@@ -23,7 +23,7 @@
 	<div id="container">
 		<div class="error-code"><?php echo ! empty($errorCode) ? $errorCode : 500; ?></div>
 		<div class="clear"></div>
-		<div class="error-msg">啊！我们迷路了。快<a href="/">返回首页</a>，快快快！</div>
+		<div class="error-msg">服务器开小差了！<a href="/">返回首页</a></div>
 	</div>
 </body>
 </html>

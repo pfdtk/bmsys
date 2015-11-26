@@ -1,8 +1,13 @@
 <?php echo widget('Admin.Common')->header(); ?>
+<script type="text/javascript">
+    if(window != window.top) {
+      window.top.location.href = '/';
+    }
+</script>
 <?php echo widget('Admin.Common')->top(); ?>
 <style type="text/css">
-	html, body { padding: 0px!important; padding: 100px 0px; min-width: 1024px; height: 100%; overflow: auto; }
-	.header, #middle { min-width: 1024px;}
+    html, body { padding: 0px!important; padding: 100px 0px; min-width: 1024px; height: 100%; overflow: auto; }
+    .header, #middle { min-width: 1024px;}
 </style>
             
 <div id="middle">
@@ -10,11 +15,11 @@
 </div>
 <div class="Switch" title="ctrl+z试试"></div>
 <script type="text/javascript">
-$(document).ready(function(e) {
-    $(".Switch").click(function(){
-    $(".left").toggle();
-  });
-});
+    $(document).ready(function(e) {
+      $(".Switch").click(function(){
+        $(".left").toggle();
+      });
+    });
 </script>
 
  <div class="right"  id="mainFrame">
@@ -29,7 +34,12 @@ $(document).ready(function(e) {
 <!-- 弹出窗口 -->
 <link rel="stylesheet" href="<?php echo loadStatic('/weishop/js/artdialog/css/ui-dialog.css'); ?>">
 <script src="<?php echo loadStatic('/weishop/js/artdialog/dist/dialog-plus-min.js'); ?>"></script>
+
 <script src="<?php echo loadStatic('/weishop/js/common.js'); ?>" type="text/javascript"></script>
- 
+<script type="text/javascript">
+    $(document).ready(function(e) {
+      org.Common.touchRouterHash();
+    });
+</script>
 </body>
 </html>

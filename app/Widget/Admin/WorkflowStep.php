@@ -38,7 +38,8 @@ class WorkflowStep extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['stepid' => $data['id'], 'workflow_id' => \Request::input('id') ] );
         $html = $this->hasPermission ?
                     '<a title="编辑" href="'.$url.'"><i class="icon-pencil"></i></a>'
-                        : '<i class="icon-pencil" title="没有权限"></i>';
+                        : '';
+        $html = ['show' => $this->hasPermission, 'html' => $html];
         return $html;
     }
 
@@ -53,7 +54,8 @@ class WorkflowStep extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['id' => $data['id']]);
         $html = $this->hasPermission ?
                     '<a title="删除" href="javascript:rc.ajaxDelete(\''.$url.'\', \'sys-list\', \'确定吗？\');"><i class="icon-trash"></i></a>'
-                        : '<i class="icon-trash" title="没有权限"></i>';
+                        : '';
+        $html = ['show' => $this->hasPermission, 'html' => $html];
         return $html;
     }
 
@@ -68,7 +70,8 @@ class WorkflowStep extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['stepid' => $data['id'], 'workflow_id' => \Request::input('id') ] );
         $html = $this->hasPermission ?
                     '<a title="设置关联人员" class="step-relation" href="'.$url.'"><i class="icon-user"></i></a>'
-                        : '<i class="icon-user" title="没有权限"></i>';
+                        : '';
+        $html = ['show' => $this->hasPermission, 'html' => $html];
         return $html;
     }
 

@@ -61,7 +61,7 @@
      * @return void
      */
     org.Common.loading = function() {
-        var loading_image = '<img src="'+SYS_DOMAIN+'/images/loading-icons/loading9.gif">';
+        var loading_image = '<img src="'+SYS_DOMAIN+'/weishop/img/loading-icons/loading9.gif">';
         $.blockUI({
             message: loading_image,
             css: {
@@ -100,7 +100,7 @@
             title: title,
             id: uploadid,
             url: upload_url+'?_=' + Math.random() + args + setting,
-            width: '500',
+            width: '540',
             height: '420',
             padding: 0,
             okValue: '确定',
@@ -130,6 +130,36 @@
      */
     org.Common.removeDialogIframe = function(uploadid) {
         $('body').find('iframe[name="'+uploadid+'"]').remove();
+    }
+
+    /**
+     * 设置url的hash
+     * @param {string} router 所要设置的hash
+     */
+    org.Common.setRouterHash = function(router) {
+        window.top.location.href = window.location.href.replace(/#!(.*)$/, '') + '#!' + router;
+    }
+
+    /**
+     * 设置右边的iframe地址
+     * @param {string} href 地址
+     */
+    org.Common.setRightIframeSrc = function(href) {
+        $('iframe#rightMain').attr('src', href);
+    }
+
+    /**
+     * js 路由实现
+     */
+    org.Common.touchRouterHash = function() {
+        var hash = window.location.hash;
+        if(hash == '') {
+            return false;
+        }
+        hash = hash.substring(2, hash.length);
+        var url = SYS_DOMAIN + hash;
+        org.Common.setRightIframeSrc(url);
+        org.Common.loading();
     }
 
     window.org = org;

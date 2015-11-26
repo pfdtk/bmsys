@@ -21,7 +21,7 @@
          <td nowrap="nowrap"><strong>用户组</strong></td>
          <td><strong>电话</strong></td>
          <td><strong>最后登录</strong></td>
-         <td width="80" nowrap="nowrap"><strong> 操作 </strong></td>
+         <td width="80" class="widget-acl" nowrap="nowrap"><strong> 操作 </strong></td>
          </tr>
          <?php foreach($userList as $key => $value): ?>
             <tr align="center">
@@ -31,16 +31,22 @@
               <td nowrap="nowrap"><?php echo $value['group_name']; ?></td>
               <td nowrap="nowrap"><?php echo $value['mobile']; ?></td>
               <td nowrap="nowrap"><?php echo date('Y-m-d H', $value['last_login_time']); ?></td>
-              <td nowrap="nowrap">
-                <?php echo widget('Admin.User')->edit($value); ?>
-                <?php echo widget('Admin.User')->acl($value); ?>
-                <?php echo widget('Admin.User')->delete($value); ?>
+              <td nowrap="nowrap" class="widget-acl">
+                <?php $edit = widget('Admin.User')->edit($value); echo $edit['html']; ?>
+                <?php $acl = widget('Admin.User')->acl($value); echo $acl['html']; ?>
+                <?php $delete = widget('Admin.User')->delete($value); echo $delete['html']; ?>
+                <?php if($edit['show'] or $acl['show'] or $delete['show']) $showAction = true; ?>
               </td>
             </tr>
           <?php endforeach; ?>
      </tbody>
     </table>
     <div class="pagination"><?php echo $page; ?></div>
+    <?php if( ! isset($showAction)): ?>
+      <style type="text/css">
+       .widget-acl { display: none; }
+      </style>
+    <?php endif; ?>
    </div>
   </div>     
 </div>

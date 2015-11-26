@@ -25,7 +25,7 @@
          <td nowrap="nowrap"><strong>关联人员</strong></td>
          <td nowrap="nowrap"><strong>备注</strong></td>
          <td nowrap="nowrap"><strong>增加时间</strong></td>
-         <td width="80" nowrap="nowrap"><strong>操作</strong></td>
+         <td width="80" nowrap="nowrap" class="widget-acl"><strong>操作</strong></td>
          </tr>
          <?php foreach($list as $key => $value): ?>
             <tr align="center">
@@ -38,16 +38,22 @@
               <td nowrap="nowrap"><?php echo $value['relatioin_users']; ?></td>
               <td nowrap="nowrap"><?php echo $value['description']; ?></td>
               <td nowrap="nowrap"><?php echo date('Y-m-d', $value['addtime']); ?></td>
-              <td nowrap="nowrap">
-                <?php echo widget('Admin.WorkflowStep')->relation($value); ?>
-                <?php echo widget('Admin.WorkflowStep')->edit($value); ?>
-                <?php echo widget('Admin.WorkflowStep')->delete($value); ?>
+              <td nowrap="nowrap" class="widget-acl">
+                <?php $relation = widget('Admin.WorkflowStep')->relation($value); echo $relation['html']; ?>
+                <?php $edit = widget('Admin.WorkflowStep')->edit($value); echo $edit['html']; ?>
+                <?php $delete = widget('Admin.WorkflowStep')->delete($value); echo $delete['html']; ?>
+                <?php if($relation['show'] or $edit['show'] or $delete['show']) $showAction = true; ?>
               </td>
             </tr>
           <?php endforeach; ?>
      </tbody>
     </table>
     <div class="pagination"><?php echo $page; ?></div>
+    <?php if( ! isset($showAction)): ?>
+      <style type="text/css">
+       .widget-acl { display: none; }
+      </style>
+    <?php endif; ?>
    </div>
   </div>     
 </div>

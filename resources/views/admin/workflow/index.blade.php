@@ -20,7 +20,7 @@
          <td nowrap="nowrap"><strong>工作流名字</strong></td>
          <td nowrap="nowrap"><strong>备注</strong></td>
          <td><strong>增加时间</strong></td>
-         <td width="80" nowrap="nowrap"><strong>详情</strong></td>
+         <td width="80" nowrap="nowrap" class="widget-acl"><strong>详情</strong></td>
          </tr>
          <?php foreach($list as $key => $value): ?>
             <tr align="center">
@@ -29,16 +29,22 @@
               <td nowrap="nowrap"><?php echo $value['name']; ?></td>
               <td nowrap="nowrap"><?php echo $value['description']; ?></td>
               <td nowrap="nowrap"><?php echo date('Y-m-d', $value['addtime']); ?></td>
-              <td nowrap="nowrap">
-                <?php echo widget('Admin.Workflow')->edit($value); ?>
-                <?php echo widget('Admin.Workflow')->detail($value); ?>
-                <?php echo widget('Admin.Workflow')->delete($value); ?>
+              <td nowrap="nowrap" class="widget-acl">
+                <?php $edit = widget('Admin.Workflow')->edit($value); echo $edit['html']; ?>
+                <?php $detail = widget('Admin.Workflow')->detail($value); echo $detail['html']; ?>
+                <?php $delete = widget('Admin.Workflow')->delete($value); echo $delete['html']; ?>
+                <?php if($edit['show'] or $detail['show'] or $delete['show']) $showAction = true; ?>
               </td>
             </tr>
           <?php endforeach; ?>
      </tbody>
     </table>
     <div class="pagination"><?php echo $page; ?></div>
+    <?php if( ! isset($showAction)): ?>
+      <style type="text/css">
+       .widget-acl { display: none; }
+      </style>
+    <?php endif; ?>
    </div>
   </div>     
 </div>

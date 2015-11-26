@@ -2,6 +2,7 @@
 
   <style type="text/css">
     body {background: none;}
+    #filelist {height: 325px; overflow-y: auto;}
   </style>
 
   <!--引入CSS-->
@@ -11,39 +12,64 @@
 
   <div class="main-content">
     <div id="sys-list" style="padding-left:20px; padding-right:20px;">
-      <div class="row">
-        
-        <!--dom结构部分-->
-        <div id="uploader-comtainer">
+      <div class="">
+        <ul class="nav nav-tabs" id="uploadTab" style="margin-top:20px;">
+          <li><a href="#uploadfile" data-toggle="tab">上传附件</a></li>
+          <li><a href="#filelist" data-toggle="tab">图库</a></li>
+          <li><a href="#netfile" data-toggle="tab">网络图片</a></li>
+        </ul>
 
-            <div class="col-tab">
-                  
-                  <div class="upload-content pad-10 on" id="div_swf_1">
-                      <div>
-                          <div id="addnew" class="addnew"></div>
-                          <div id="filePicker" class="select-upload-file-buttom">选择图片</div>
-                          <div style="float:left;">
-                            <a class="btn btn-default" id="upload-btn-save" style="font-size: 12px; margin-right: 10px;" >
-                              立即上传
-                            </a>
-                          </div>
-                          <div class="clear"></div>
-                          <div class="onShow" id="nameTip">最多上传 <font color="red"> <?php echo (isset($args['nums']) and $args['nums']) ? intval($args['nums']) : 1; ?></font> 个附件,单文件最大 <font color="red"><?php echo (isset($args['filesize']) and $args['filesize']) ? intval($args['filesize']) : 2;?> MB</font></div>
-                          <div class="bk3"></div>
-                          
-                          <div class="lh24">支持 <font style="font-family: Arial, Helvetica, sans-serif"><?php echo $args['alowexts']; ?></font> 格式</div><span style="display: none"><input type="checkbox" onclick="change_params()" value="1" id="watermark_enable"> 是否添加水印</span>
-                      </div>  
-                      <div class="bk10"></div>
-                      <fieldset id="swfupload" class="blue pad-10">
-                      <legend>列表</legend>
-                          <!--用来存放item-->
-                        <div id="fileList" class="uploader-list"></div>  
-                      </fieldset>
-                  </div>
+        <div class="tab-content">
+        
+          <div class="tab-pane active" id="uploadfile">
+            <!--dom结构部分-->
+            <div id="uploader-comtainer">
+
+                <div class="col-tab">
+                      
+                      <div class="upload-content pad-10 on" id="div_swf_1">
+                          <div>
+                              <div id="addnew" class="addnew"></div>
+                              <div id="filePicker" class="select-upload-file-buttom">选择图片</div>
+                              <div style="float:left;">
+                                <a class="btn btn-default" id="upload-btn-save" style="font-size: 12px; margin-right: 10px;" >
+                                  立即上传
+                                </a>
+                              </div>
+                              <div class="clear"></div>
+                              <div class="onShow" id="nameTip">最多上传 <font color="red"> <?php echo (isset($args['nums']) and $args['nums']) ? intval($args['nums']) : 1; ?></font> 个附件,单文件最大 <font color="red"><?php echo (isset($args['filesize']) and $args['filesize']) ? intval($args['filesize']) : 2;?> MB</font></div>
+                              <div class="bk3"></div>
+                              
+                              <div class="lh24">支持 <font style="font-family: Arial, Helvetica, sans-serif"><?php echo $args['alowexts']; ?></font> 格式</div><span style="display: none"><input type="checkbox" onclick="change_params()" value="1" id="watermark_enable"> 是否添加水印</span>
+                          </div>  
+                          <div class="bk10"></div>
+                          <fieldset id="swfupload" class="blue pad-10">
+                              <legend style="margin-bottom:0px; line-height: 20px;">列表</legend>
+                              <!--用来存放item-->
+                            <div id="fileList" class="uploader-list"></div>  
+                          </fieldset>
+                      </div>
+                </div>
+
             </div>
+          </div>
+
+          <div class="tab-pane" id="filelist">
+            <iframe name="right" id="rightMain" src="<?php echo route('foundation.upload.imagelist'); ?>" frameborder="false" scrolling="auto" style="border:none" width="100%" height="99%" allowtransparency="true"></iframe>
+            <div id="response-filelist"></div>
+          </div>
+
+          <div class="tab-pane" id="netfile">
+            <span>请输入网络图片地址（http://开头）</span>
+            <input class="upload-reponse" type="text" style="width:430px; margin-top: 5px;">
+          </div>
 
         </div>
-
+        <script type="text/javascript">
+          $(function () {
+            $('#uploadTab a:first').tab('show');
+          })
+        </script>
 
         <script type="text/javascript">
           $(function() {
@@ -70,7 +96,7 @@
                     duplicate: true,
                     formData: {args:'<?php echo $parpams['args']; ?>', authkey:'<?php echo $parpams['authkey']; ?>'},
                     // swf文件路径
-                    swf: SYS_DOMAIN + '/lib/webuploader/Uploader.swf',
+                    swf: SYS_DOMAIN + '/weishop/js/webuploader/Uploader.swf',
                     // 文件接收服务端。
                     server: '<?php echo route('foundation.upload.process'); ?>',
                     // 选择文件的按钮。可选。

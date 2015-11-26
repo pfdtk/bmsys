@@ -27,7 +27,7 @@
 }
 
 #uploader-comtainer {
-    margin-top: 20px;
+    /*margin-top: 20px;*/
 }
 
 #uploader-comtainer .col-tab ul.tabBut {
@@ -60,15 +60,16 @@
 #uploader-comtainer .col-tab .upload-content {
     /**border: 1px solid #dce3ed;*/
     overflow: hidden;
-    padding: 10px;
+    padding: 0px;
     font-size: 12px!important;
 }
 
 #uploader-comtainer .col-tab fieldset {
     border: 1px solid #dce3ed;
-    overflow: hidden;
+    overflow-y: auto;
     padding: 10px;
     color: #004499;
+    height: 255px;
 }
 
 #uploader-comtainer .col-tab fieldset legend {

@@ -42,7 +42,7 @@
          <td nowrap="nowrap"><strong>功能代码</strong></td>
          <td nowrap="nowrap"><strong>显示为菜单</strong></td>
          <td nowrap="nowrap"><strong>备注</strong></td>
-         <td width="80" nowrap="nowrap"><strong> 操作 </strong></td>
+         <td width="80" nowrap="nowrap" class="widget-acl"><strong> 操作 </strong></td>
          </tr>
 
          <?php echo widget('Admin.Acl')->acllist($list, $pid); ?>
@@ -52,6 +52,11 @@
 
     <?php echo widget('Admin.Acl')->sort(); ?>
     </form>
+    <?php if( ! \App\Services\Tmp::getTmp()): ?>
+      <style type="text/css">
+       .widget-acl { display: none; }
+      </style>
+    <?php endif; ?>
    </div>
   </div>     
 </div>

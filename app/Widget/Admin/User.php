@@ -23,8 +23,9 @@ class User extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['id' => url_param_encode($data['id']) ]);
         $html = $this->hasPermission ?
                     '<a title="编辑" href="'.$url.'"><i class="icon-pencil"></i></a>'
-                        : '<i class="icon-pencil" title="没有权限"></i>';
-        return $html;
+                        : '';
+        $result = ['show' => $this->hasPermission, 'html' => $html];
+        return $result;
     }
 
     /**
@@ -38,8 +39,9 @@ class User extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['id' => url_param_encode($data['id'])]);
         $html = $this->hasPermission ?
                     '<a title="删除" href="javascript:rc.ajaxDelete(\''.$url.'\', \'sys-list\', \'确定吗？\');"><i class="icon-trash"></i></a>'
-                        : '<i class="icon-trash" title="没有权限"></i>';
-        return $html;
+                        : '';
+        $result = ['show' => $this->hasPermission, 'html' => $html];
+        return $result;
     }
 
     /**
@@ -53,8 +55,9 @@ class User extends AbstractBase
         $url = route($this->module.'.'.$this->class.'.'.$this->function, ['id' => url_param_encode($data['id'])]);
         $html = $this->hasPermission ?
                     '<a title="权限管理" href="'.$url.'"><i class="icon-user"></i></a>'
-                        : '<i title="没有权限" class="icon-user"></i>';
-        return $html;
+                        : '';
+        $result = ['show' => $this->hasPermission, 'html' => $html];
+        return $result;
     }
 
     /**
