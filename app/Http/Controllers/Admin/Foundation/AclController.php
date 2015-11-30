@@ -131,7 +131,7 @@ class AclController extends Controller
         $permissionInfo = $permissionModel->getOnePermissionById(intval($permissionId));
 
         if(empty($permissionInfo)) {
-            return Js::error(Lang::get('common.acl_not_found'), true);
+            return Js::error(Lang::get('acl.acl_not_found'), true);
         }
 
         $select = Tree::dropDownSelect($list, $permissionInfo['pid']);

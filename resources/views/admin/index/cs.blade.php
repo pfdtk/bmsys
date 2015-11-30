@@ -13,7 +13,7 @@
   <div id="res"></div>
 
   <!-- 上传的示例 -->
-    上传的示例：<?php echo widget('Admin.Upload')->setConfig(['id' => 'id', 'nums' => '100', 'callback' => 'returnUpload', 'thumbSetting' => [['width' => 50, 'height' => 50],['width' => 70, 'height' => 70]], 'waterSetting' => true ])->uploadButton();?>
+    上传的示例：<?php echo widget('Admin.Upload')->setConfig(['id' => 'id', 'nums' => '100', 'callback' => 'returnUpload', 'thumbSetting' => [['width' => 150, 'height' => 150],['width' => 170, 'height' => 170]], 'waterSetting' => true ])->uploadButton();?>
     <script type="text/javascript">
         //示例的回调函数
         function returnUpload(uploadid, itemId) {

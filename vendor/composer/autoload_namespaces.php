@@ -22,4 +22,5 @@ return array(
     'DebugBar' => array($vendorDir . '/maximebf/debugbar/src'),
     'Cron' => array($vendorDir . '/mtdowling/cron-expression/src'),
     'Carbon' => array($vendorDir . '/nesbot/carbon/src'),
+    'BlueM\\Tree' => array($vendorDir . '/bluem/tree/lib'),
 );

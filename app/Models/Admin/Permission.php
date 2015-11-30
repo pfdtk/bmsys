@@ -45,6 +45,16 @@ class Permission extends Base
     }
 
     /**
+     * 取得所有小于等于三层的权限信息
+     * 
+     * @return array
+     */
+    public function getLevelLessThanFour()
+    {
+        //return $this->where('level', '<', 4)->orderBy('sort', 'desc')->orderBy('id', 'asc')->get()->toArray();
+    }
+
+    /**
      * 增加权限功能
      * 
      * @param array $data 所需要插入的信息

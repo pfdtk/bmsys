@@ -17,20 +17,6 @@ class MCAManager {
     CONST MAC_BIND_NAME = 'mac';
 
     /**
-     * 标识为一级菜单
-     *
-     * @var int
-     */
-    CONST MENU_LEVEL_FIRST = 1;
-
-    /**
-     * 标识为二级菜单
-     *
-     * @var int
-     */
-    CONST MENU_LEVEL_SECOND = 2;
-
-    /**
      * 当前请求的模块
      * 
      * @var string
@@ -133,23 +119,12 @@ class MCAManager {
     }
 
     /**
-     * 取得当前操作所属的顶级菜单信息
-     * 
-     * @return array 功能信息
+     * get crubms
      */
-    public function getCurrentMCAfatherMenuInfo()
+    public function getCrubms()
     {
-        return $this->searchMCAMatchMenuLevelForCurrentMCA(self::MENU_LEVEL_FIRST, $this->currentMCAInfo());
-    }
-
-    /**
-     * 取得当前操作所属的二级菜单信息
-     * 
-     * @return array 功能信息
-     */
-    public function getCurrentMCASecondFatherMenuInfo()
-    {
-        return $this->searchMCAMatchMenuLevelForCurrentMCA(self::MENU_LEVEL_SECOND, $this->currentMCAInfo());
+        $currentMCAInfo = $this->currentMCAInfo();
+        return $this->getCurrentMCAfatherMenuInfo($currentMCAInfo);
     }
 
     /**
@@ -158,18 +133,19 @@ class MCAManager {
      * @param int $level 几级菜单但不是一级菜单
      * @return array
      */
-    private function searchMCAMatchMenuLevelForCurrentMCA($menuLevel, $currentMCAInfo)
+    private function getCurrentMCAfatherMenuInfo($currentMCAInfo)
     {
         $userPermission = $this->getUserPermission();
-        foreach($userPermission as $key => $value)
-        {
-            if($currentMCAInfo['pid'] == $value['id'] and ! empty($value['id']))
-            {
-                if($value['level'] == $menuLevel) return $value;
-                return $this->searchMCAMatchMenuLevelForCurrentMCA($menuLevel, $value);
+        $parentMCA = [];
+        foreach($userPermission as $key => $value) {
+            if($currentMCAInfo['pid'] == $value['id'] and ! empty($value['id'])) {
+                $parentMCA[] = $value;
+                if($value['pid'] != 0) {
+                    $parentMCA = array_merge($this->getCurrentMCAfatherMenuInfo($value), $parentMCA);
+                }
             }
         }
-        return [];
+        return $parentMCA;
     }
 
     /**
@@ -179,13 +155,10 @@ class MCAManager {
      */
     private function currentMCAInfo()
     {
-        if( ! $this->currentMCA)
-        {
+        if( ! $this->currentMCA) {
             $userPermission = $this->getUserPermission();
-            foreach($userPermission as $key => $value)
-            {
-                if($this->matchCurrentMCA($value))
-                {
+            foreach($userPermission as $key => $value) {
+                if($this->matchCurrentMCA($value)) {
                     $this->currentMCA = $value;
                     break;
                 }

@@ -3,6 +3,7 @@
   <style type="text/css">
     body {background: none;}
     #filelist {height: 325px; overflow-y: auto;}
+    .images-list-img {width: 100px; height: 100px; cursor: pointer;}
   </style>
 
   <!--引入CSS-->
@@ -94,7 +95,7 @@
                     fileSingleSizeLimit: <?php echo (isset($args['filesize']) and $args['filesize']) ? intval($args['filesize']) : 2;?>*1024*1024,
                     //防止重复文件加入列队
                     duplicate: true,
-                    formData: {args:'<?php echo $parpams['args']; ?>', authkey:'<?php echo $parpams['authkey']; ?>'},
+                    formData: {args:'<?php echo $param['args']; ?>', authkey:'<?php echo $param['authkey']; ?>'},
                     // swf文件路径
                     swf: SYS_DOMAIN + '/weishop/js/webuploader/Uploader.swf',
                     // 文件接收服务端。
@@ -113,7 +114,7 @@
                 uploader.on( 'fileQueued', function( file ) {
                     var $li = $(
                             '<div id="' + file.id + '" class="file-item thumbnail" title="' + file.name + '">' +
-                                '<img>' +
+                                '<img class="images-list-img">' +
                                 '<div class="' + file.id + '-remove web-upload-remove" title="删除"><i class="icon-remove"></i></div>'+
                             '</div>'
                             ),

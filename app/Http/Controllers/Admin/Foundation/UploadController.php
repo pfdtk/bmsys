@@ -16,32 +16,36 @@ class UploadController extends Controller
 {
     /**
      * 上传弹出窗口
+     *
+     * @access public
      */
     public function index()
     {
-        $parpams = Request::only('args', 'authkey');
-        $args = @ unserialize(base64url_decode($parpams['args']));
+        $param = Request::only('args', 'authkey');
+        $args = @ unserialize(base64url_decode($param['args']));
         $uploadObject = new UploadManager();
 
-        if( ! $uploadObject->setParam($args)->checkUploadToken($parpams['authkey'])) {
+        if( ! $uploadObject->setParam($args)->checkUploadToken($param['authkey'])) {
             return abort(500);
         }
 
         return view('admin.upload.index',
-            compact('parpams', 'args')
+            compact('param', 'args')
         );
     }
 
     /**
      * 处理上传
+     *
+     * @access public
      */
     public function process()
     {
-        $parpams = Request::only('authkey', 'args');
-        $config = @ unserialize(base64url_decode($parpams['args']));
+        $param = Request::only('authkey', 'args');
+        $config = @ unserialize(base64url_decode($param['args']));
 
         $uploadObject = new UploadManager();
-        if( ! $uploadObject->setParam($config)->checkUploadToken($parpams['authkey'])) {
+        if( ! $uploadObject->setParam($config)->checkUploadToken($param['authkey'])) {
             return abort(500);
         }
 
@@ -60,45 +64,79 @@ class UploadController extends Controller
     }
 
     /**
-     * 保存一些文件的信息到数据库中
-     */
-    private function saveFile($files, $file)
-    {
-        $uploadFileName = $file->getClientOriginalName();
-        $fileSize = $file->getClientSize();
-        $fileExt = $file->getClientOriginalExtension();
-        $isImage = isImage($fileExt);
-        $time = time();
-        $datas = [];
-
-        foreach ($files as $key => $value) {
-            $data['filename'] = strpos($value, 'thumb') !== false ? $uploadFileName . ' 缩略图' : $uploadFileName;
-            $data['filepath'] = $value;
-            $data['filesize'] = $fileSize / 1024;
-            $data['fileext'] = $fileExt;
-            $data['isimage'] = $isImage ? Attachment::IS_IMAGE_YES : Attachment::IS_IMAGE_NO;
-            $data['isthumb'] = strpos($value, 'thumb') !== false ? Attachment::IS_THUMB_YES : Attachment::IS_THUMB_NO;
-            $data['uploadtime'] = $time;
-            $data['status'] = Attachment::STATUS_YES;
-            $datas[] = $data;
-        }
-        with(new Attachment())->addFile($datas);
-    }
-
-    /**
      * 图库
+     *
+     * @access public
      */
     public function imagelist()
     {
-        $model = new Attachment();
         $data['keyword'] = strip_tags(Request::input('keyword'));
         $data['time'] = strip_tags(Request::input('time'));
         
-        $list = $model->getAllByPage($data);
+        $list = with(new Attachment())->getAllByPage($data);
         $page = $list->setPath('')->appends(Request::all())->render();
         return view('admin.upload.imagelist',
             compact('list', 'page', 'data')
         );
+    }
+
+    /**
+     * 保存一些文件的信息到数据库中
+     *
+     * @access private
+     */
+    private function saveFile($files, $file)
+    {
+        $fileExt = $file->getClientOriginalExtension();
+        $isImage = isImage($fileExt) ? Attachment::IS_IMAGE_YES : Attachment::IS_IMAGE_NO;
+        $datas = $this->generDatas($files, $file, $fileExt, $isImage);
+        with(new Attachment())->addFile($datas);
+    }
+
+    /**
+     * gener datas
+     *
+     * @access private
+     */
+    private function generDatas($files, $file, $fileExt, $isImage)
+    {
+        $datas = [];
+        foreach ($files as $key => $value) {
+            $data['filename'] = $this->getFileName($value, $file->getClientOriginalName());
+            $data['filepath'] = $value;
+            $data['filesize'] = $file->getClientSize() / 1024;
+            $data['fileext'] = $fileExt;
+            $data['isimage'] = $isImage;
+            $data['isthumb'] = $this->isThumb($value);
+            $data['uploadtime'] = time();
+            $data['status'] = Attachment::STATUS_YES;
+            $datas[] = $data;
+        }
+        return $datas;
+    }
+
+    /**
+     * get file name
+     *
+     * @access private
+     */
+    private function getFileName($file, $uploadFileName)
+    {
+        return strpos($file, 'thumb') !== false ?
+            $uploadFileName . ' ' . Lang::get('common.thumb') :
+            $uploadFileName;
+    }
+
+    /**
+     * is thumb
+     *
+     * @access private
+     */
+    private function isThumb($file)
+    {
+        return strpos($file, 'thumb') !== false ?
+            Attachment::IS_THUMB_YES :
+            Attachment::IS_THUMB_NO;
     }
 
 }

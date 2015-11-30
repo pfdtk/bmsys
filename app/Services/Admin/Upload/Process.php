@@ -97,26 +97,34 @@ class Process extends BaseProcess
      */
     public function upload()
     {
-        // 是否上传出错
-        if ( ! $this->file->isValid() or $this->file->getError() != UPLOAD_ERR_OK) {
-            return false;
-        }
+        if ( ! $this->file->isValid() or $this->file->getError() != UPLOAD_ERR_OK) return false;
 
-        // 保存的路径
-        $savePath = $this->setSavePath();
-
-        // 保存的文件名
         $saveFileName = $this->getSaveFileName().'.'.$this->file->getClientOriginalExtension();
-
-        // 保存文件
+        $savePath = $this->setSavePath();
         $this->file->move($savePath, $saveFileName);
-
-        // 文件是否存在
         $realFile = $savePath . $saveFileName;
-        if( ! file_exists($realFile)) {
-            return false;
-        }
 
+        if( ! file_exists($realFile)) return false;
+
+        $this->doWaterImage($realFile);
+
+        $realFileUrl[] = substr(str_replace($this->getConfigSavePath(), '', $realFile), 1);
+
+        $thumbRealFileUrl = $this->doCutImage($realFile, $savePath);
+
+        return array_merge(
+            $realFileUrl,
+            $thumbRealFileUrl
+        );
+    }
+
+    /**
+     * 加水印
+     *
+     * @param string $realFile 文件
+     */
+    private function doWaterImage($realFile)
+    {
         //是否加上水印
         if(isset($this->params['waterSetting']) and $this->params['waterSetting'] === true) {
             $waterImage = $this->params['waterImage'];
@@ -125,17 +133,50 @@ class Process extends BaseProcess
             }
             $this->waterImage($realFile, $waterImage);
         }
+    }
 
-        //返回文件
-        $realFileUrl[] = substr(str_replace($this->getConfigSavePath(), '', $realFile), 1);
+    /**
+     * 裁剪
+     *
+     * @param string $realFile 文件
+     * @param string $savePath 保存的路径
+     */
+    private function doCutImage($realFile, $savePath)
+    {
         $thumbRealFileUrl = [];
-
-        //是否要裁剪
         if(isset($this->params['thumbSetting']) and ! empty($this->params['thumbSetting'])) {
             $thumbRealFileUrl = $this->cutImage($realFile, $savePath);
         }
+        return $thumbRealFileUrl;
+    }
 
-        return array_merge($realFileUrl, $thumbRealFileUrl);
+    /**
+     * 开始处理裁剪
+     *
+     * @param  string $realFile 所要处理的图片的位置
+     * @param  string $savePath 所要保存的位置
+     * @return string           处理后的图片
+     */
+    private function cutImage($realFile, $savePath)
+    {
+        if( ! isImage( strtolower($this->file->getClientOriginalExtension()) ) ) {
+            return [];
+        }
+
+        $imagine = new \Imagine\Gd\Imagine();
+        $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
+        $result = [];
+
+        foreach($this->params['thumbSetting'] as $key => $value) {
+            if(isset($value['width'], $value['height']) and is_numeric($value['width']) and is_numeric($value['height'])) {
+                $size = new \Imagine\Image\Box($value['width'], $value['height']);
+                $saveName = $this->getCutImageSaveName($savePath, $value['width'], $value['height']);
+                $imagine->open($realFile)->thumbnail($size, $mode)->save($saveName);
+                $result[] = substr(str_replace($this->getConfigSavePath(), '', $saveName), 1);
+            }
+        }
+        
+        return $result;
     }
 
     /**
@@ -161,35 +202,6 @@ class Process extends BaseProcess
 
         $image->paste($watermark, $bottomRight);
         $image->save($realFile);
-    }
-
-    /**
-     * 开始处理裁剪
-     *
-     * @param  string $realFile 所要处理的图片的位置
-     * @param  string $savePath 所要保存的位置
-     * @return string           处理后的图片
-     */
-    private function cutImage($realFile, $savePath)
-    {
-        if( ! isImage($this->file->getClientOriginalExtension())) {
-            throw new \Exception("Image thumb must be images.");
-        }
-
-        $imagine = new \Imagine\Gd\Imagine();
-        $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
-        $result = [];
-
-        foreach($this->params['thumbSetting'] as $key => $value) {
-            if(isset($value['width'], $value['height']) and is_numeric($value['width']) and is_numeric($value['height'])) {
-                $size = new \Imagine\Image\Box($value['width'], $value['height']);
-                $saveName = $this->getCutImageSaveName($savePath, $value['width'], $value['height']);
-                $imagine->open($realFile)->thumbnail($size, $mode)->save($saveName);
-                $result[] = substr(str_replace($this->getConfigSavePath(), '', $saveName), 1);
-            }
-        }
-        
-        return $result;
     }
 
     /**

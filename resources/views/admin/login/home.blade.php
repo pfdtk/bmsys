@@ -28,7 +28,7 @@ body{ background:#0066A8 no-repeat center 0px;}
 <!--[if lt IE 9 ]> <body style="background:#fff;">您使用的是IE浏览器，仅支持IE9以上版本，建议使用firefox、chrome浏览器，以或得最佳体验。</body><![endif]-->
 <!--[if (gt IE 8)|!(IE)]><!--> 
 <body>
-<div class="tit"><img src="<?php echo loadStatic('/weishop/img/tit.png'); ?>" alt="" /></div>
+<div class="tit"></div>
 <div class="login-wrap">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>

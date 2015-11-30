@@ -13,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        /*\Session::extend('mongo', function($app)
+        {
+            // Return implementation of SessionHandlerInterface
+        });*/
     }
 
     /**

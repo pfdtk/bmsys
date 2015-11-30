@@ -41,38 +41,6 @@ class Menu
     }
 
     /**
-     * 返回ztree插件所需的结点，目前只支持到三级
-     */
-    public function ztreeNode()
-    {
-        $this->list = SC::getUserPermissionSession();
-        $result = [];
-        foreach($this->list as $key => $value) {
-            if($value['display'] == self::DISABLE_NONE or $value['level'] == 4) continue;
-            $url = R('common', $value['module'].'.'.$value['class'].'.'.$value['action']);
-            if($value['pid'] == 0 or $this->isSecondFatherNode($value)) $url = 'javascript:;';
-            $arr = ['id' => $value['id'], 'pId' => $value['pid'], 'name' => $value['name'], 'url' => $url, 'target' => '_self'];
-            $arr['open'] = true;
-            $result[] = $arr;
-        }
-        return json_encode($result);
-    }
-
-    /**
-     * 是不是第二级父菜单
-     * 
-     * @return boolean
-     */
-    private function isSecondFatherNode($currentNode)
-    {
-        if($currentNode['level'] != 2) return false;
-        foreach($this->list as $key => $value) {
-            if($value['pid'] == $currentNode['id']) return true;
-        }
-        return false;
-    }
-
-    /**
      * 取回登录所保存的权限信息并生成树形结构
      */
     protected function generalData()

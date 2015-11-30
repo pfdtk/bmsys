@@ -54,7 +54,7 @@ class Tree
     }
 
     /**
-     * 递归select中的option下拉表单，用于权限增加和编辑
+     * 递归select中的option下拉表单
      * 
      * @param  array $datas 数据源
      * @param  array $id 已经选择的option值
